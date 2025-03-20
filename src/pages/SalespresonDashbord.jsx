@@ -5,9 +5,13 @@ import { Container, Row, Col, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 const SalespersonDashboard = () => {
+  // Fetch user details from sessionStorage
+  const user = JSON.parse(sessionStorage.getItem("user")) || {};
+  const role = sessionStorage.getItem("role") || "Salesperson"; // Default role if not found
+
   return (
     <>
-      <Header />
+      <Header insideDashboard={true}/>
       <Container fluid>
         <Row className="min-vh-100">
           {/* Sidebar (Fixed Full Height) */}
@@ -20,8 +24,10 @@ const SalespersonDashboard = () => {
             <Card className="p-4 shadow-lg flex-grow-1">
               <Card.Body>
                 <Card.Title>
-                  <h2>
-                    Welcome, <span className="text-primary fw-bold">User</span>
+                <h2>
+                    Welcome, <span className="text-primary fw-bold"> 
+                      {user.username || "Salesperson"} ({role})
+                    </span>
                   </h2>
                 </Card.Title>
 

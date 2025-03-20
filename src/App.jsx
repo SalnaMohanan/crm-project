@@ -24,6 +24,7 @@ import Customer from './pages/Customer'
 import Customeradd from './commponents/customer/Customeradd'
 import Customerview from './commponents/customer/Customerview'
 import Customeredit from './commponents/customer/Customeredit'
+import Profiles from './commponents/Profiles'
 
 function App() {
 
@@ -35,14 +36,17 @@ function App() {
   <Route path='/contact' element={<Contact/>}/>
   <Route path='/login' element={<Auth/>}/>
   <Route path='/register' element={<Auth insideRegister={true}/>}/>
+  <Route path='/profile' element={<Profiles/>}/>
 
 {/* dashbord */}
-<Route path='/menager-dashboard' element={<ManegerDashboard/>}/>
+<Route path='/manager-dashboard' element={<ManegerDashboard insidemanager={true}/>}/>
 <Route path='/sale-dashboard' element={<SalespersonDashboard/>}/>
 
 
   {/* campiagn  */}
-  <Route path='/campaign' element={<Campaign/>}/>
+  <Route path='/campaign' element={<Campaign insidemanager={true}/>}/>
+  <Route path='/user-campaign' element={<Campaign insidemanager={false}/>}/>
+
   <Route path='/campaign-add' element={<Camadd/>}/>
   <Route path='/campaign-view' element={<Camview/>}/>
   <Route path='/campaign-edit' element={<Camedit/>}/>
