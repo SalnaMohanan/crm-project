@@ -94,3 +94,49 @@ export const getLeadsAPI = async() => {
         throw error;
     }
 };
+
+// factch  salesperson
+export const getSalespersonsAPI = async() => {
+    try {
+        const response = await axios.get(`${SERVER_URL}/salespersons`);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching salespersons:", error);
+        throw error;
+    }
+};
+
+//lead view
+export const getLeadByIdAPI = async(id) => {
+    try {
+        const response = await axios.get(`${SERVER_URL}/lead-view/${id}`); // Remove extra "/"
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching lead:", error);
+        throw error;
+    }
+};
+// detet lead
+export const deleteLeadAPI = async(id) => {
+    try {
+        const response = await commonAPI("DELETE", `${SERVER_URL}/leads/${id}`);
+
+        if (response && response.data) {
+            return response.data;
+        } else {
+            throw new Error("No response data received.");
+        }
+    } catch (error) {
+        console.error("Error deleting lead:", error);
+        throw new Error(error.response ? error.response.data : error.message);
+    }
+};
+
+// EDIT
+export const updateeadAPI = async(id, updatedData) => {
+    await fetch(`${SERVER_URL}/leads/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedData),
+    });
+};

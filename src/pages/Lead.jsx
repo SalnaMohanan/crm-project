@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Container, Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { getLeadsAPI } from "../services/allAPI";
+import { deleteLeadAPI, getLeadsAPI } from "../services/allAPI";
 
 const Lead = ({ insidemanager }) => {
     const [leads, setLeads] = useState([]);
@@ -54,17 +54,18 @@ const Lead = ({ insidemanager }) => {
         fetchLeads();
     }, []);
 
-    const handleDelete = async (id) => {
-        if (window.confirm("Are you sure you want to delete this lead?")) {
-            try {
-                await deleteLeadAPI(id);
-                setLeads((prevLeads) => prevLeads.filter((lead) => lead._id !== id));
-            } catch (err) {
-                console.error("Error deleting lead:", err);
-                setError("Failed to delete lead.");
+     const handleDelete = async (id) => {
+            if (window.confirm("Are you sure you want to delete this lead?")) {
+                try {
+                    await deleteLeadAPI(id);
+                    setLeads((prev) => prev.filter((lead) => lead._id !== id));
+                    alert("lead deleted successfully!");
+                } catch (error) {
+                    console.error("Error deleting lead:", error);
+                    alert("Failed to delete lead.");
+                }
             }
-        }
-    };
+        };
 
     if (error) {
         return <Container className="p-4"><p className="text-danger">{error}</p></Container>;

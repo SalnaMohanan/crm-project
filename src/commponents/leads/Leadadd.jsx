@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
-import { addLeadAPI } from "../../services/allAPI";
+import { addLeadAPI, getSalespersonsAPI } from "../../services/allAPI";
 import { useNavigate } from "react-router-dom";
 
 const LeadAdd = () => {
@@ -14,9 +14,20 @@ const LeadAdd = () => {
     assignedTo: "",
     notes: "",
   });
-
+  const [salespersons, setSalespersons] = useState([]);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    const fetchSalespersons = async () => {
+      try {
+        const data = await getSalespersonsAPI();
+        setSalespersons(data);
+      } catch (error) {
+        console.error("Error fetching salespersons:", error);
+      }
+    };
+    fetchSalespersons();
+  }, []);
 
   // Validation function
   const validateForm = (data) => {
@@ -149,17 +160,21 @@ const LeadAdd = () => {
             </Form.Group>
           </Col>
           <Col md={6}>
-            <Form.Group>
-              <Form.Label className="fw-bold">Assigned To</Form.Label>
-              <Form.Control
-                type="text"
-                name="assignedTo"
-                value={leadData.assignedTo}
-                onChange={handleChange}
-                isInvalid={!!errors.assignedTo}
-              />
-              <Form.Control.Feedback type="invalid">{errors.assignedTo}</Form.Control.Feedback>
-            </Form.Group>
+          <Form.Group>
+               <Form.Label className="fw-bold">Assigned To</Form.Label>
+               <Form.Select name="assignedTo" value={leadData.assignedTo} onChange={handleChange} required>
+                 <option value="">Select Salesperson</option>
+                 {salespersons.length > 0 ? (
+                   salespersons.map((person) => (
+                     <option key={person.id} value={person.username}>
+                       {person.name} {person.username}
+                     </option>
+                   ))
+                 ) : (
+                   <option disabled>No salespersons found</option>
+                 )}
+               </Form.Select>
+             </Form.Group>
           </Col>
         </Row>
 
@@ -193,3 +208,8 @@ const LeadAdd = () => {
 };
 
 export default LeadAdd;
+
+
+
+
+
