@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { addCampaignAPI } from "../../services/allAPI";
 
 const Camadd = () => {
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const [campaignData, setCampaignData] = useState({
-    name: "",
+    campaignname: "", // Changed from name to match backend
     type: "",
     beginDate: "",
     endDate: "",
@@ -19,23 +20,16 @@ const Camadd = () => {
 
   const validateForm = (data) => {
     let newErrors = {};
-    const validURL = /^(http|https):\/\/[^ "]+$/;
 
-    if (!data.name.trim()) newErrors.name = "Campaign name is required.";
+    if (!data.campaignname.trim()) newErrors.campaignname = "Campaign name is required.";
     if (!data.type.trim()) newErrors.type = "Campaign type is required.";
     if (!data.beginDate) newErrors.beginDate = "Begin date is required.";
     if (!data.endDate) newErrors.endDate = "End date is required.";
-
     if (data.beginDate && data.endDate && new Date(data.endDate) < new Date(data.beginDate)) {
       newErrors.endDate = "End date cannot be before begin date.";
     }
-
     if (!data.status) newErrors.status = "Please select a status.";
     if (!data.description.trim()) newErrors.description = "Description is required.";
-
-    if (data.image && !validURL.test(data.image)) {
-      newErrors.image = "Enter a valid image URL.";
-    }
 
     setErrors(newErrors);
     setFormValid(Object.keys(newErrors).length === 0);
@@ -48,43 +42,72 @@ const Camadd = () => {
     validateForm(updatedData);
   };
 
-  const handleSubmit = (e) => {
+  // Handle file upload
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setCampaignData({ ...campaignData, image: file });
+    validateForm({ ...campaignData, image: file });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (formValid) {
-      console.log(" Campaign Added:", campaignData);
-      alert(" Campaign added successfully!");
+        try {
+            const formData = new FormData();
+            formData.append("campaignname", campaignData.campaignname);
+            formData.append("type", campaignData.type);
+            formData.append("beginDate", campaignData.beginDate);
+            formData.append("endDate", campaignData.endDate);
+            formData.append("status", campaignData.status);
+            formData.append("description", campaignData.description);
+            if (campaignData.image) {
+                formData.append("image", campaignData.image);
+            }
 
-      // Reset form
-      setCampaignData({
-        name: "",
-        type: "",
-        beginDate: "",
-        endDate: "",
-        status: "",
-        description: "",
-        image: "",
-      });
-      setErrors({});
-      setFormValid(false);
+            console.log("Submitting formData:", [...formData.entries()]); // Debugging log
+
+            const response = await addCampaignAPI(formData);
+            console.log("Campaign Added:", response.data);
+            alert("Campaign added successfully!");
+
+            setCampaignData({
+                campaignname: "",
+                type: "",
+                beginDate: "",
+                endDate: "",
+                status: "",
+                description: "",
+                image: "",
+            });
+
+            setErrors({});
+            setFormValid(false);
+            navigate("/campaign");
+
+        } catch (error) {
+            console.error("Error adding campaign:", error.response?.data || error.message);
+            alert("Failed to add campaign. Please try again.");
+        }
     }
-  };
+};
+
 
   return (
     <Container className="p-4">
       <h2 className="text-center mb-4 text-primary fw-bold"> Create a Campaign</h2>
-      <Form onSubmit={handleSubmit}>
+      <Form onSubmit={handleSubmit} encType="multipart/form-data">
         <Row className="mb-3">
           <Col md={6}>
             <Form.Group>
               <Form.Label>Campaign Name</Form.Label>
               <Form.Control
                 type="text"
-                name="name"
-                value={campaignData.name}
+                name="campaignname"
+                value={campaignData.campaignname}
                 onChange={handleChange}
-                isInvalid={!!errors.name}
+                isInvalid={!!errors.campaignname}
               />
-              <Form.Control.Feedback type="invalid">{errors.name}</Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">{errors.campaignname}</Form.Control.Feedback>
             </Form.Group>
           </Col>
           <Col md={6}>
@@ -151,15 +174,12 @@ const Camadd = () => {
           </Col>
           <Col md={6}>
             <Form.Group>
-              <Form.Label>Campaign Image (URL)</Form.Label>
+              <Form.Label>Campaign Image</Form.Label>
               <Form.Control
-                type="text"
+                type="file"
                 name="image"
-                value={campaignData.image}
-                onChange={handleChange}
-                isInvalid={!!errors.image}
+                onChange={handleFileChange}
               />
-              <Form.Control.Feedback type="invalid">{errors.image}</Form.Control.Feedback>
             </Form.Group>
           </Col>
         </Row>

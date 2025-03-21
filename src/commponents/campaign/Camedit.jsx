@@ -1,27 +1,54 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { getCampaignByIdAPI, updateCampaignAPI } from "../../services/allAPI";
 
-const Camedit = ({ campaign, onUpdate }) => {
+const Camedit = () => {
   const navigate = useNavigate();
-
+  const { id } = useParams();
   const [formData, setFormData] = useState({
-    name: campaign?.name || "",
-    type: campaign?.type || "",
-    beginDate: campaign?.beginDate || "",
-    endDate: campaign?.endDate || "",
-    status: campaign?.status || "",
-    description: campaign?.description || "",
-    image: campaign?.image || "",
+    campaignname: "",
+    type: "",
+    beginDate: "",
+    endDate: "",
+    status: "",
+    description: "",
+    image: "", // Will be used only for fetching, not editing
   });
 
+  const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState({});
-  const [previewImage, setPreviewImage] = useState(campaign?.image || "");
+
+  // Fetch campaign data on mount
+  useEffect(() => {
+    const fetchCampaign = async () => {
+      try {
+        const data = await getCampaignByIdAPI(id);
+        if (data) {
+          setFormData({
+            campaignname: data.campaignname || "",
+            type: data.type || "",
+            beginDate: data.beginDate || "",
+            endDate: data.endDate || "",
+            status: data.status || "",
+            description: data.description || "",
+            image: data.image || "", // Keep image but do not allow edits
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching campaign:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCampaign();
+  }, [id]);
 
   const validateForm = () => {
     let newErrors = {};
 
-    if (!formData.name.trim()) newErrors.name = "Campaign name is required.";
+    if (!formData.campaignname.trim()) newErrors.campaignname = "Campaign name is required.";
     if (!formData.type.trim()) newErrors.type = "Campaign type is required.";
     if (!formData.beginDate) newErrors.beginDate = "Begin date is required.";
     if (!formData.endDate) {
@@ -31,12 +58,6 @@ const Camedit = ({ campaign, onUpdate }) => {
     }
     if (!formData.status) newErrors.status = "Please select a status.";
     if (!formData.description.trim()) newErrors.description = "Description is required.";
-    
-    // Validate Image URL
-    const validURL = /^(http|https):\/\/[^ "]+$/;
-    if (formData.image && !validURL.test(formData.image)) {
-      newErrors.image = "Enter a valid image URL.";
-    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -44,25 +65,39 @@ const Camedit = ({ campaign, onUpdate }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
 
-    // Update image preview if it's a URL
-    if (name === "image") {
-      setPreviewImage(value);
-    }
+    // Prevent updates to the image field
+    if (name === "image") return;
+
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Form Data Before Submission:", formData);
+
     if (validateForm()) {
-      onUpdate(formData);
-      navigate(-1);
+      try {
+        // Remove image before sending update request
+        const { image, ...updatedFormData } = formData;
+
+        console.log("Sending to API:", updatedFormData);
+        await updateCampaignAPI(id, updatedFormData);
+        console.log("Update successful!");
+        navigate(-1);
+      } catch (error) {
+        console.error("Error updating campaign:", error);
+      }
+    } else {
+      console.log("Form validation failed:", errors);
     }
   };
+
+  if (loading) return <p className="text-center mt-4">Loading...</p>;
 
   return (
     <Container className="p-4">
-      <h2 className="text-center mb-4"> Edit Campaign</h2>
+      <h2 className="text-center mb-4">Edit Campaign</h2>
       <Form onSubmit={handleSubmit}>
         <Row className="mb-3">
           <Col md={6}>
@@ -70,12 +105,12 @@ const Camedit = ({ campaign, onUpdate }) => {
               <Form.Label>Campaign Name</Form.Label>
               <Form.Control
                 type="text"
-                name="name"
-                value={formData.name}
+                name="campaignname"
+                value={formData.campaignname}
                 onChange={handleChange}
-                isInvalid={!!errors.name}
+                isInvalid={!!errors.campaignname}
               />
-              <Form.Control.Feedback type="invalid">{errors.name}</Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">{errors.campaignname}</Form.Control.Feedback>
             </Form.Group>
           </Col>
           <Col md={6}>
@@ -140,30 +175,6 @@ const Camedit = ({ campaign, onUpdate }) => {
               <Form.Control.Feedback type="invalid">{errors.status}</Form.Control.Feedback>
             </Form.Group>
           </Col>
-          <Col md={6}>
-            <Form.Group controlId="imageURL">
-              <Form.Label>Campaign Image URL</Form.Label>
-              <Form.Control
-                type="text"
-                name="image"
-                value={formData.image}
-                onChange={handleChange}
-                isInvalid={!!errors.image}
-              />
-              <Form.Control.Feedback type="invalid">{errors.image}</Form.Control.Feedback>
-            </Form.Group>
-            {previewImage && (
-              <div className="text-center mt-2">
-                <img
-                  src={previewImage}
-                  alt="Campaign Preview"
-                  className="img-fluid rounded"
-                  style={{ maxHeight: "200px" }}
-                  onError={() => setPreviewImage("")}
-                />
-              </div>
-            )}
-          </Col>
         </Row>
 
         <Row className="mb-3">
@@ -191,7 +202,7 @@ const Camedit = ({ campaign, onUpdate }) => {
             </Button>
           </Col>
           <Col md={4}>
-            <Button variant="primary" type="submit" className="w-100">
+            <Button onClick={handleSubmit} variant="primary" type="submit" className="w-100">
               Save Changes
             </Button>
           </Col>
