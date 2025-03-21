@@ -23,10 +23,10 @@ const Sidebar = () => {
           📋 Leads
         </Link>
         {/* Uncomment these when needed */}
-         <Link to="/follow-up" className="text-light fw-semibold my-2 text-decoration-none">
+         <Link to={role === "manager" ? "/follow-up" : "/user-follow-up"} className="text-light fw-semibold my-2 text-decoration-none">
           🔄 Follow-up
         </Link>
-        <Link to="/customer" className="text-light fw-semibold my-2 text-decoration-none">
+        <Link to={role === "manager" ? "/customer" : "/user-customer"} className="text-light fw-semibold my-2 text-decoration-none">
           👤 Customers
         </Link> 
       </nav>

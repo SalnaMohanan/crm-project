@@ -58,7 +58,9 @@ function App() {
   <Route path='/lead-view/:id' element={<Leadview/>}/>
   <Route path='/lead-edit/:id' element={<Leadedit/>}/>
 {/* followup */}
-<Route path='/follow-up' element={<Followup/>}/>
+<Route path="/follow-up" element={<Followup insidemanager={true} />} />
+<Route path="/user-follow-up" element={<Followup insidemanager={false} />} />
+
 <Route path='/followup-add' element={<Addfollowp/>}/>
 <Route path='/followup-view' element={<Viewfollowup/>}/>
 {/* customer */}
