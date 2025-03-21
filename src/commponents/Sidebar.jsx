@@ -19,7 +19,7 @@ const Sidebar = () => {
 >
 📢 Campaign
 </Link>
-        <Link to="/leads" className="text-light fw-semibold my-2 text-decoration-none">
+        <Link to={role === "manager" ? "/leads" : "/user-leads"} className="text-light fw-semibold my-2 text-decoration-none">
           📋 Leads
         </Link>
         {/* Uncomment these when needed */}

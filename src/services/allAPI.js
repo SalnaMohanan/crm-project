@@ -75,3 +75,22 @@ export const updateCampaignAPI = async(id, updatedData) => {
         body: JSON.stringify(updatedData),
     });
 };
+
+//add leads
+
+export const addLeadAPI = async(reqBody) => {
+    return await commonAPI("POST", `${SERVER_URL}/add-lead`, reqBody);
+};
+
+// get all leads
+export const getLeadsAPI = async() => {
+    try {
+        console.log("Calling API:", `${SERVER_URL}/all-leads`); // ✅ Debug log
+        const response = await axios.get(`${SERVER_URL}/all-leads`);
+        console.log("API Response:", response.data); // ✅ Debug log
+        return response.data;
+    } catch (error) {
+        console.error("Error in getLeadsAPI:", error);
+        throw error;
+    }
+};

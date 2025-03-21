@@ -64,6 +64,7 @@ const Auth = ({ insideRegister }) => {
           sessionStorage.setItem("user", JSON.stringify(user));
           sessionStorage.setItem("token", token);
           sessionStorage.setItem("role", user.role);
+           sessionStorage.setItem("userId", user._id); // Store user ID
 
           setIsAuthorized(true);
           setIsLogined(true);

@@ -51,7 +51,9 @@ function App() {
   <Route path="/campaign-view/:id" element={<Camview />} />  
   <Route path='/campaign-edit/:id' element={<Camedit/>}/>
 {/* leads */}
-<Route path='/leads' element={<Lead/>}/>
+<Route path='/leads' element={<Lead insidemanager={true}/>}/>
+< Route path='/user-leads' element={<Lead insidemanager={false}/>}/>
+
   <Route path='/lead-add' element={<Leadadd/>}/>
   <Route path='/lead-view' element={<Leadview/>}/>
   <Route path='/lead-edit' element={<Leadedit/>}/>

@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { Form, Button, Container, Row, Col } from "react-bootstrap";
+import { addLeadAPI } from "../../services/allAPI";
+import { useNavigate } from "react-router-dom";
 
 const LeadAdd = () => {
+  const navigate=useNavigate()
   const [leadData, setLeadData] = useState({
     name: "",
     email: "",
@@ -13,6 +16,7 @@ const LeadAdd = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   // Validation function
   const validateForm = (data) => {
@@ -43,23 +47,23 @@ const LeadAdd = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm(leadData)) {
-      console.log("Lead Submitted:", leadData);
+    if (!validateForm(leadData)) return;
+  
+  
+    setLoading(true);
+    try {
+      await addLeadAPI(leadData);
       alert("Lead added successfully!");
-      setLeadData({
-        name: "",
-        email: "",
-        phone: "",
-        source: "",
-        status: "",
-        assignedTo: "",
-        notes: "",
-      });
-      setErrors({});
+      navigate("/leads");
+    } catch (error) {
+      console.error("Error adding lead:", error);
+      alert("Failed to add lead. Please try again.");
     }
+    setLoading(false);
   };
+  
 
   return (
     <Container className="p-4">
@@ -140,8 +144,6 @@ const LeadAdd = () => {
                 <option value="New">New</option>
                 <option value="Contacted">Contacted</option>
                 <option value="Qualified">Qualified</option>
-                <option value="Converted">Converted</option>
-                <option value="Lost">Lost</option>
               </Form.Select>
               <Form.Control.Feedback type="invalid">{errors.status}</Form.Control.Feedback>
             </Form.Group>
@@ -181,8 +183,8 @@ const LeadAdd = () => {
 
         {/* Submit Button */}
         <div className="text-center mt-4">
-          <Button variant="primary" type="submit" disabled={Object.keys(errors).length > 0}>
-            Add Lead
+          <Button variant="primary" type="submit" disabled={loading || Object.keys(errors).length > 0}>
+            {loading ? "Adding Lead..." : "Add Lead"}
           </Button>
         </div>
       </Form>
