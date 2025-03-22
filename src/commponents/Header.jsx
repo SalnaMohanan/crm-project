@@ -16,7 +16,7 @@ const Header = ({ insideDashboard }) => {
   // Logout Function
   const handleLogout = () => {
     sessionStorage.clear();
-    navigate("/login");
+    navigate("/");
   };
 
   return (

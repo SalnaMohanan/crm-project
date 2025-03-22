@@ -195,3 +195,8 @@ export const deleteCustomerAPI = async(id) => {
         throw new Error(error.response ? error.response.data : error.message);
     }
 };
+
+//add contact
+export const contactAPI = async(reqBody) => {
+    return await commonAPI("POST", `${SERVER_URL}/contact`, reqBody);
+};
