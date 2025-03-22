@@ -9,26 +9,35 @@ const Sidebar = () => {
       className="bg-primary text-light d-flex flex-column align-items-center p-4 vh-100 shadow"
       style={{ width: "250px" }}
     >
-
       <nav className="d-flex flex-column mt-5">
-
-<Link
-  to={role === "manager" ? "/campaign" : "/user-campaign"}
-  className="text-light fw-semibold my-2 text-decoration-none"
-  style={{ textDecoration: "none" }}
->
-📢 Campaign
-</Link>
-        <Link to={role === "manager" ? "/leads" : "/user-leads"} className="text-light fw-semibold my-2 text-decoration-none">
+        <Link
+          to={role === "manager" ? "/campaign" : "/user-campaign"}
+          className="text-light fw-semibold my-2 text-decoration-none"
+        >
+          📢 Campaign
+        </Link>
+        <Link
+          to={role === "manager" ? "/leads" : "/user-leads"}
+          className="text-light fw-semibold my-2 text-decoration-none"
+        >
           📋 Leads
         </Link>
-        {/* Uncomment these when needed */}
-         <Link to={role === "manager" ? "/follow-up" : "/user-follow-up"} className="text-light fw-semibold my-2 text-decoration-none">
+        <Link
+          to={role === "manager" ? "/follow-up" : "/user-follow-up"}
+          className="text-light fw-semibold my-2 text-decoration-none"
+        >
           🔄 Follow-up
         </Link>
-        <Link to={role === "manager" ? "/customer" : "/user-customer"} className="text-light fw-semibold my-2 text-decoration-none">
-          👤 Customers
-        </Link> 
+
+        {/* Show Customers link only for managers */}
+        {role === "manager" && (
+          <Link
+            to="/customers"
+            className="text-light fw-semibold my-2 text-decoration-none"
+          >
+            👤 Customers
+          </Link>
+        )}
       </nav>
     </aside>
   );

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Container, Form, Button, Row, Col, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { addCustomerAPI } from "../../services/allAPI";
 
 const CustomerAdd = () => {
   const navigate = useNavigate();
@@ -48,14 +49,21 @@ const CustomerAdd = () => {
   };
 
   // Handle Form Submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      setShowAlert(true);
-      setTimeout(() => {
-        setShowAlert(false);
-        navigate("/customer");
-      }, 2000);
+      try {
+        await addCustomerAPI(customer);
+        setShowAlert(true);
+        setTimeout(() => {
+          setShowAlert(false);
+          alert("Customer added successfully")
+          navigate("/user-leads");
+        }, 2000);
+      } catch (error) {
+        console.error("Error:", error);
+        alert("Failed to add customer. Please try again.");
+      }
     }
   };
 

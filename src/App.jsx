@@ -64,10 +64,12 @@ function App() {
 <Route path='/followup-add' element={<Addfollowp/>}/>
 <Route path='/followup-view' element={<Viewfollowup/>}/>
 {/* customer */}
-<Route path='/customer' element={<Customer/>}/>
+<Route path="/customers" element={<Customer role="manager" />} />
+<Route path="/user-customers" element={<Customer role="salesperson" />} />
+
 <Route path='/customer-add' element={<Customeradd/>}/>
-  <Route path='/customer-view' element={<Customerview/>}/>
-  <Route path='/customer-edit' element={<Customeredit/>}/>
+  <Route path='/customer-view/:id' element={<Customerview/>}/>
+  <Route path='/customer-edit/:id' element={<Customeredit/>}/>
 
 </Routes>
     {/* <Footer/> */}

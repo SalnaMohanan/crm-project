@@ -140,3 +140,58 @@ export const updateeadAPI = async(id, updatedData) => {
         body: JSON.stringify(updatedData),
     });
 };
+
+//add followup
+export const addFollowupAPI = async(reqBody) => {
+    try {
+        const response = await commonAPI("POST", `${SERVER_URL}/add-lead`, reqBody);
+        return response;
+    } catch (error) {
+        console.error("API Error:", error);
+        throw error;
+    }
+};
+
+
+// add customer
+
+export const addCustomerAPI = async(customerData) => {
+    try {
+        const response = await commonAPI("POST", `${SERVER_URL}/add-customer`, customerData);
+        return response;
+    } catch (error) {
+        console.error("Error adding customer:", error);
+        throw error;
+    }
+};
+
+
+// Fetch all customers
+export const getCustomersAPI = async() => {
+    return await commonAPI("GET", `${SERVER_URL}/customers`);
+}; // getby id
+
+export const getCustomerByIdAPI = async(customerId) => {
+    return await commonAPI("GET", `${SERVER_URL}/customer-view/${customerId}`);
+};
+
+// Update customer by ID
+export const updateCustomerByIdAPI = async(id, customerData) => {
+    return await commonAPI("PUT", `${SERVER_URL}/customer-edit/${id}`, customerData);
+};
+
+// detet customer
+export const deleteCustomerAPI = async(id) => {
+    try {
+        const response = await commonAPI("DELETE", `${SERVER_URL}/customer-delete/${id}`);
+
+        if (response && response.data) {
+            return response.data;
+        } else {
+            throw new Error("No response data received.");
+        }
+    } catch (error) {
+        console.error("Error deleting customer:", error);
+        throw new Error(error.response ? error.response.data : error.message);
+    }
+};
