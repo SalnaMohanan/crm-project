@@ -141,16 +141,7 @@ export const updateeadAPI = async(id, updatedData) => {
     });
 };
 
-//add followup
-export const addFollowupAPI = async(reqBody) => {
-    try {
-        const response = await commonAPI("POST", `${SERVER_URL}/add-lead`, reqBody);
-        return response;
-    } catch (error) {
-        console.error("API Error:", error);
-        throw error;
-    }
-};
+
 
 
 // add customer
@@ -199,4 +190,25 @@ export const deleteCustomerAPI = async(id) => {
 //add contact
 export const contactAPI = async(reqBody) => {
     return await commonAPI("POST", `${SERVER_URL}/contact`, reqBody);
+};
+
+export const addFollowupAPI = async(followupData) => {
+    try {
+        const response = await commonAPI("POST", `${SERVER_URL}/followup-add`, followupData);
+        return response;
+    } catch (error) {
+        console.error("Error adding customer:", error);
+        throw error;
+    }
+};
+
+// getfollowup 
+export const getFollowupAPI = async() => {
+    return await commonAPI("GET", `${SERVER_URL}/follow-up`);
+};
+
+// services/allAPI.js
+
+export const getFollowupByIdAPI = async(followupId) => {
+    return await commonAPI("GET", `${SERVER_URL}/followup-view/${followupId}`);
 };

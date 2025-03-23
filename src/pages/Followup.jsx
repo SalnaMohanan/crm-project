@@ -1,12 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Table, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { getFollowupAPI } from "../services/allAPI";
 
-const Followup = ({insidemanager}) => {
-  const followup = [
-    { contactname: "abc", type: "Email", Date: "2025-03-10", status: "Pending" },
-    { contactname: "xyz", type: "Phone Call", Date: "2025-03-15", status: "Completed" },
-  ];
+const Followup = ({ insidemanager }) => {
+  const [followup, setFollowup] = useState([]); // State to store follow-up data
+  const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(null); // Error state
+
+  useEffect(() => {
+    const fetchFollowups = async () => {
+      try {
+        const response = await getFollowupAPI();
+        
+        if (response && Array.isArray(response.data)) {
+          setFollowup(response.data); // Extract the data array
+        } else {
+          console.error("Unexpected response format", response);
+          setError("Unexpected response format");
+        }
+      } catch (err) {
+        console.error("Error fetching follow-up data:", err); // Log the error
+        setError("Error fetching data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFollowups();
+  }, []); // Empty dependency array to run once when the component mounts
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <Container className="p-4">
@@ -24,38 +49,38 @@ const Followup = ({insidemanager}) => {
       )}
 
       {/* Show Follow-up Table only if `insidemanager` is true */}
-      
+      {insidemanager && (
         <Table striped bordered hover responsive className="text-center shadow-sm bg-white rounded">
           <thead className="bg-dark text-white">
             <tr>
               <th>#</th>
               <th>Contact Name</th>
-              <th>Type</th>
+              <th>Submitted By</th>
               <th>Date</th>
               <th>Status</th>
             </tr>
           </thead>
           <tbody>
-            {followup.map((item, index) => (
-              <tr key={index}>
+            {followup.map((followup, index) => (
+              <tr key={followup.id}> {/* Use 'id' as the key */}
                 <td>{index + 1}</td>
                 <td>
-                  <Link to={`/followup-view/${index}`} className="text-primary fw-bold text-decoration-none">
-                    {item.contactname}
+                  <Link to={`/followup-view/${followup._id}`} className="text-primary fw-bold text-decoration-none">
+                    {followup.name}
                   </Link>
                 </td>
-                <td>{item.type}</td>
-                <td>{item.Date}</td>
+                <td>{followup.submittedby}</td>
+                <td>{followup.date}</td>
                 <td>
-                  <span className={`badge ${item.status === "Pending" ? "bg-warning" : "bg-success"}`}>
-                    {item.status}
+                  <span className={`badge ${followup.status === "Pending" ? "bg-warning" : "bg-success"}`}>
+                    {followup.status}
                   </span>
                 </td>
               </tr>
             ))}
           </tbody>
         </Table>
-      
+      )}
     </Container>
   );
 };

@@ -23,7 +23,7 @@ const Sidebar = () => {
           📋 Leads
         </Link>
         <Link
-          to={role === "manager" ? "/follow-up" : "/user-follow-up"}
+          to={role === "manager" ? "/follow-up" : "/follow-user"}
           className="text-light fw-semibold my-2 text-decoration-none"
         >
           🔄 Follow-up

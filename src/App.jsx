@@ -25,8 +25,11 @@ import Customeradd from './commponents/customer/Customeradd'
 import Customerview from './commponents/customer/Customerview'
 import Customeredit from './commponents/customer/Customeredit'
 import Profiles from './commponents/Profiles'
+import Userfollowup from './pages/Userfollowup'
 
 function App() {
+
+  const salespersonName = localStorage.getItem("salespersonName");
 
   return (<>
     {/* <Header/> */}
@@ -59,10 +62,11 @@ function App() {
   <Route path='/lead-edit/:id' element={<Leadedit/>}/>
 {/* followup */}
 <Route path="/follow-up" element={<Followup insidemanager={true} />} />
-<Route path="/user-follow-up" element={<Followup insidemanager={false} />} />
+<Route path="/user-follow-up" element={<Followup insidemanager={false} salespersonName={salespersonName || 'default-name'}/>} />
+<Route path='/follow-user' element={<Userfollowup/>}/>
 
 <Route path='/followup-add' element={<Addfollowp/>}/>
-<Route path='/followup-view' element={<Viewfollowup/>}/>
+<Route path='/followup-view/:id' element={<Viewfollowup/>}/>
 {/* customer */}
 <Route path="/customers" element={<Customer role="manager" />} />
 <Route path="/user-customers" element={<Customer role="salesperson" />} />
