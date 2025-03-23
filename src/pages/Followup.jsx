@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Table, Button } from "react-bootstrap";
+import { Container, Table, Button, Pagination } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { getFollowupAPI } from "../services/allAPI";
 
@@ -7,12 +7,14 @@ const Followup = ({ insidemanager }) => {
   const [followup, setFollowup] = useState([]); // State to store follow-up data
   const [loading, setLoading] = useState(true); // Loading state
   const [error, setError] = useState(null); // Error state
+  const [currentPage, setCurrentPage] = useState(1); // State to manage current page
+  const [itemsPerPage] = useState(5); // Number of items per page
 
   useEffect(() => {
     const fetchFollowups = async () => {
       try {
         const response = await getFollowupAPI();
-        
+
         if (response && Array.isArray(response.data)) {
           setFollowup(response.data); // Extract the data array
         } else {
@@ -32,6 +34,16 @@ const Followup = ({ insidemanager }) => {
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
+
+  // Pagination Logic
+  const totalPages = Math.ceil(followup.length / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = followup.slice(indexOfFirstItem, indexOfLastItem);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   return (
     <Container className="p-4">
@@ -61,9 +73,9 @@ const Followup = ({ insidemanager }) => {
             </tr>
           </thead>
           <tbody>
-            {followup.map((followup, index) => (
+            {currentItems.map((followup, index) => (
               <tr key={followup.id}> {/* Use 'id' as the key */}
-                <td>{index + 1}</td>
+                <td>{indexOfFirstItem + index + 1}</td>
                 <td>
                   <Link to={`/followup-view/${followup._id}`} className="text-primary fw-bold text-decoration-none">
                     {followup.name}
@@ -81,6 +93,25 @@ const Followup = ({ insidemanager }) => {
           </tbody>
         </Table>
       )}
+
+      {/* Pagination Controls */}
+      <Pagination className="justify-content-center">
+        <Pagination.Prev
+          onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
+        />
+        {[...Array(totalPages)].map((_, index) => (
+          <Pagination.Item
+            key={index + 1}
+            active={index + 1 === currentPage}
+            onClick={() => handlePageChange(index + 1)}
+          >
+            {index + 1}
+          </Pagination.Item>
+        ))}
+        <Pagination.Next
+          onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
+        />
+      </Pagination>
     </Container>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Table, Button } from "react-bootstrap";
+import { Container, Table, Button, Pagination } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { deleteCustomerAPI, getCustomersAPI } from "../services/allAPI";
 
@@ -8,6 +8,9 @@ const Customer = () => {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const [currentPage, setCurrentPage] = useState(1); // Pagination state
+  const [itemsPerPage] = useState(5); // Items per page
 
   useEffect(() => {
     const fetchCustomers = async () => {
@@ -25,6 +28,7 @@ const Customer = () => {
     fetchCustomers();
   }, []);
 
+  // Handle customer deletion
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this customer?")) {
       try {
@@ -35,6 +39,16 @@ const Customer = () => {
         alert("Failed to delete customer.");
       }
     }
+  };
+
+  // Pagination Logic
+  const totalPages = Math.ceil(customers.length / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentCustomers = customers.slice(indexOfFirstItem, indexOfLastItem);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
   return (
@@ -57,9 +71,9 @@ const Customer = () => {
             </tr>
           </thead>
           <tbody>
-            {customers.map((customer, index) => (
+            {currentCustomers.map((customer, index) => (
               <tr key={customer._id}>
-                <td>{index + 1}</td>
+                <td>{indexOfFirstItem + index + 1}</td>
                 <td>{customer.name}</td>
                 <td>{customer.email}</td>
                 <td>{customer.phone}</td>
@@ -83,6 +97,25 @@ const Customer = () => {
       ) : (
         <p className="text-center mt-4">No customers found.</p>
       )}
+
+      {/* Pagination Controls */}
+      <Pagination className="justify-content-center">
+        <Pagination.Prev
+          onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
+        />
+        {[...Array(totalPages)].map((_, index) => (
+          <Pagination.Item
+            key={index + 1}
+            active={index + 1 === currentPage}
+            onClick={() => handlePageChange(index + 1)}
+          >
+            {index + 1}
+          </Pagination.Item>
+        ))}
+        <Pagination.Next
+          onClick={() => currentPage < totalPages && handlePageChange(currentPage + 1)}
+        />
+      </Pagination>
     </Container>
   );
 };

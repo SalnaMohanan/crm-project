@@ -36,7 +36,7 @@ const Camview = () => {
   return (
     <Container className="p-4">
       <Card className="shadow-lg border-0 rounded-4 overflow-hidden">
-        {campaign?.image ? (
+        {/* {campaign?.image ? (
           <div className="text-center bg-light">
             <img
               src={campaign.image}
@@ -47,7 +47,7 @@ const Camview = () => {
           </div>
         ) : (
           <div className="text-center py-4 bg-light">No Image Available</div>
-        )}
+        )} */}
 
         <Card.Body className="p-4">
           <h2 className="text-primary fw-bold text-center">{campaign?.campaignname}</h2>
