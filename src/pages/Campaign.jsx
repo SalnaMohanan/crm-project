@@ -8,6 +8,8 @@ const Campaign = ({ insidemanager }) => {
   const [currentPage, setCurrentPage] = useState(1); // Pagination state
   const [itemsPerPage] = useState(5); // Items per page
 
+  const role = sessionStorage.getItem("role");
+
   useEffect(() => {
     const loadCampaigns = async () => {
       try {
@@ -45,6 +47,7 @@ const Campaign = ({ insidemanager }) => {
 
   return (
     <Container className="p-4">
+      <Link to={role === "manager" ? "/manager-dashboard" : "/sale-dashboard"}>Go Back</Link>
       <h2 className="text-center mb-4 text-primary fw-bold">Campaigns</h2>
 
       {/* Add New Campaign Button (Only for Managers) */}

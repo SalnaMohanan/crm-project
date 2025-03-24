@@ -10,6 +10,9 @@ const Followup = ({ insidemanager }) => {
   const [currentPage, setCurrentPage] = useState(1); // State to manage current page
   const [itemsPerPage] = useState(5); // Number of items per page
 
+  const role = sessionStorage.getItem("role");
+
+
   useEffect(() => {
     const fetchFollowups = async () => {
       try {
@@ -47,6 +50,8 @@ const Followup = ({ insidemanager }) => {
 
   return (
     <Container className="p-4">
+            <Link to={role === "manager" ? "/manager-dashboard" : "/sale-dashboard"}>Go Back</Link>
+      
       <h1 className="text-center mb-4 text-primary fw-bold">Follow-Up</h1>
 
       {/* Show "Add New Follow-up" button only if user is a salesperson */}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Container, Table, Button, Pagination } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { deleteCustomerAPI, getCustomersAPI } from "../services/allAPI";
 
 const Customer = () => {
@@ -11,6 +11,9 @@ const Customer = () => {
 
   const [currentPage, setCurrentPage] = useState(1); // Pagination state
   const [itemsPerPage] = useState(5); // Items per page
+
+  const role = sessionStorage.getItem("role");
+
 
   useEffect(() => {
     const fetchCustomers = async () => {
@@ -53,6 +56,8 @@ const Customer = () => {
 
   return (
     <Container className="p-4">
+            <Link to={role === "manager" ? "/manager-dashboard" : "/sale-dashboard"}>Go Back</Link>
+
       <h2 className="text-center mb-4 text-primary fw-bold">Customer Management</h2>
 
       {loading ? (

@@ -185,9 +185,9 @@ const CustomerAdd = () => {
           <Button variant="success" type="submit" className="me-2">
             Save Customer
           </Button>
-          <Button variant="secondary" onClick={() => navigate("/customer")}>
+          {/* <Button variant="secondary" onClick={() => navigate("/customer")}>
             Cancel
-          </Button>
+          </Button> */}
         </div>
       </Form>
     </Container>

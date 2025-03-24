@@ -13,6 +13,9 @@ const Lead = ({ insidemanager }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const role = sessionStorage.getItem("role");
+
+
   useEffect(() => {
     const fetchLeads = async () => {
       setLoading(true);
@@ -76,6 +79,8 @@ const Lead = ({ insidemanager }) => {
 
   return (
     <Container className="p-4">
+            <Link to={role === "manager" ? "/manager-dashboard" : "/sale-dashboard"}>Go Back</Link>
+      
       <h2 className="text-center mb-4 text-primary fw-bold">Leads</h2>
 
       {insidemanager && (

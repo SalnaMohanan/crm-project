@@ -9,8 +9,13 @@ const UserFollowupPage = () => {
   const handleShow = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
 
+  const role = sessionStorage.getItem("role");
+
+
   return (
     <Container className="p-4">
+            <Link to={role === "manager" ? "/manager-dashboard" : "/sale-dashboard"}>Go Back</Link>
+      
       <Row className="text-center mb-4">
         <Col>
           <h1 className="text-primary fw-bold">User Follow-up</h1>
