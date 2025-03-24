@@ -148,19 +148,22 @@ export const updateeadAPI = async(id, updatedData) => {
 
 export const addCustomerAPI = async(customerData) => {
     try {
-        const response = await commonAPI("POST", `${SERVER_URL}/add-customer`, customerData);
+        const response = await commonAPI("POST", `${SERVER_URL}/customer-add`, customerData);
+        console.log("API Response:", response); // Log response here
         return response;
     } catch (error) {
-        console.error("Error adding customer:", error);
-        throw error;
+        console.error("API Error:", error);
+        return { status: 500, message: "Server error" };
     }
 };
+
 
 
 // Fetch all customers
 export const getCustomersAPI = async() => {
     return await commonAPI("GET", `${SERVER_URL}/customers`);
-}; // getby id
+};
+// getby id
 
 export const getCustomerByIdAPI = async(customerId) => {
     return await commonAPI("GET", `${SERVER_URL}/customer-view/${customerId}`);

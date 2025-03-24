@@ -34,17 +34,17 @@ const SalespersonDashboard = () => {
                 {/* Dashboard Stats Cards */}
                 <Row className="mt-5 g-4">
                   {[
-                    { title: "Campaign", path: "/campaign" },
-                    { title: "Lead", path: "/leads" },
-                    { title: "Followup", path: "/followup" },
-                    { title: "Customer", path: "/customer" },
+                    { title: "Campaign", path: "/user-campaign" },
+                    { title: "Lead", path: "/user-leads" },
+                    { title: "Followup", path: "/follow-user" },
+                    // { title: "Customer", path: "/customer" },
                   ].map((item, index) => (
                     <Col md={3} key={index}>
                       <Card className="p-3 shadow-sm border-0">
                         <Card.Body className="text-center">
                           <Card.Title className="fw-bold">{item.title}</Card.Title>
                           <Card.Text>
-                            Total {item.title}:
+                           
                             <br />
                             <Link to={item.path} className="text-primary fw-bold fs-5">
                               <i className="fa-solid fa-arrow-right"></i>

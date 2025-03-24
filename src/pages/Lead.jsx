@@ -114,6 +114,7 @@ const Lead = ({ insidemanager }) => {
                     <td>{lead.email}</td>
                     <td>{lead.phone}</td>
                     <td>{lead.assignedTo}</td>
+                    
                     <td>{lead.status}</td>
                     <td>
                       <div style={{ display: "flex", gap: "10px" }}>

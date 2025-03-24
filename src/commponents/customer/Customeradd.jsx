@@ -5,7 +5,7 @@ import { addCustomerAPI } from "../../services/allAPI";
 
 const CustomerAdd = () => {
   const navigate = useNavigate();
-  const [customer, setCustomer] = useState({
+  const [customerData, setCustomerData] = useState({
     name: "",
     email: "",
     phone: "",
@@ -23,20 +23,20 @@ const CustomerAdd = () => {
   const validateForm = () => {
     let newErrors = {};
 
-    if (!customer.name.trim()) newErrors.name = "Name is required!";
-    if (!customer.email.trim()) newErrors.email = "Email is required!";
-    else if (!/\S+@\S+\.\S+/.test(customer.email))
+    if (!customerData.name.trim()) newErrors.name = "Name is required!";
+    if (!customerData.email.trim()) newErrors.email = "Email is required!";
+    else if (!/\S+@\S+\.\S+/.test(customerData.email))
       newErrors.email = "Invalid email format!";
 
-    if (!customer.phone.trim()) newErrors.phone = "Phone number is required!";
-    else if (!/^\d{10,15}$/.test(customer.phone))
+    if (!customerData.phone.trim()) newErrors.phone = "Phone number is required!";
+    else if (!/^\d{10,15}$/.test(customerData.phone))
       newErrors.phone = "Phone must be 10-15 digits only!";
 
-    if (!customer.address.trim()) newErrors.address = "Address is required!";
-    if (!customer.company.trim()) newErrors.company = "Company is required!";
-    if (!customer.industry.trim()) newErrors.industry = "Industry is required!";
-    if (!customer.website.trim()) newErrors.website = "Website is required!";
-    else if (!/^https?:\/\/.+\..+/.test(customer.website))
+    if (!customerData.address.trim()) newErrors.address = "Address is required!";
+    if (!customerData.company.trim()) newErrors.company = "Company is required!";
+    if (!customerData.industry.trim()) newErrors.industry = "Industry is required!";
+    if (!customerData.website.trim()) newErrors.website = "Website is required!";
+    else if (!/^https?:\/\/.+\..+/.test(customerData.website))
       newErrors.website = "Enter a valid URL (e.g., https://example.com)";
 
     setErrors(newErrors);
@@ -45,7 +45,7 @@ const CustomerAdd = () => {
 
   // Handle Input Changes
   const handleChange = (e) => {
-    setCustomer({ ...customer, [e.target.name]: e.target.value });
+    setCustomerData({ ...customerData, [e.target.name]: e.target.value });
   };
 
   // Handle Form Submission
@@ -53,13 +53,19 @@ const CustomerAdd = () => {
     e.preventDefault();
     if (validateForm()) {
       try {
-        await addCustomerAPI(customer);
-        setShowAlert(true);
-        setTimeout(() => {
-          setShowAlert(false);
-          alert("Customer added successfully")
-          navigate("/user-leads");
-        }, 2000);
+        const response = await addCustomerAPI(customerData);
+        console.log("API Response:", response);
+
+        if (response.status === 201) {
+          setShowAlert(true);
+          setTimeout(() => {
+            setShowAlert(false);
+            alert("Customer added successfully");
+            navigate("/user-leads");
+          }, 2000);
+        } else {
+          alert("Failed to add customer. Please try again.");
+        }
       } catch (error) {
         console.error("Error:", error);
         alert("Failed to add customer. Please try again.");
@@ -81,7 +87,7 @@ const CustomerAdd = () => {
               <Form.Control
                 type="text"
                 name="name"
-                value={customer.name}
+                value={customerData.name}
                 onChange={handleChange}
                 isInvalid={!!errors.name}
               />
@@ -93,7 +99,7 @@ const CustomerAdd = () => {
               <Form.Control
                 type="email"
                 name="email"
-                value={customer.email}
+                value={customerData.email}
                 onChange={handleChange}
                 isInvalid={!!errors.email}
               />
@@ -105,7 +111,7 @@ const CustomerAdd = () => {
               <Form.Control
                 type="text"
                 name="phone"
-                value={customer.phone}
+                value={customerData.phone}
                 onChange={handleChange}
                 isInvalid={!!errors.phone}
               />
@@ -117,7 +123,7 @@ const CustomerAdd = () => {
               <Form.Control
                 type="text"
                 name="company"
-                value={customer.company}
+                value={customerData.company}
                 onChange={handleChange}
                 isInvalid={!!errors.company}
               />
@@ -131,7 +137,7 @@ const CustomerAdd = () => {
               <Form.Control
                 type="text"
                 name="address"
-                value={customer.address}
+                value={customerData.address}
                 onChange={handleChange}
                 isInvalid={!!errors.address}
               />
@@ -143,7 +149,7 @@ const CustomerAdd = () => {
               <Form.Control
                 type="text"
                 name="industry"
-                value={customer.industry}
+                value={customerData.industry}
                 onChange={handleChange}
                 isInvalid={!!errors.industry}
               />
@@ -155,7 +161,7 @@ const CustomerAdd = () => {
               <Form.Control
                 type="text"
                 name="website"
-                value={customer.website}
+                value={customerData.website}
                 onChange={handleChange}
                 isInvalid={!!errors.website}
               />
@@ -168,7 +174,7 @@ const CustomerAdd = () => {
                 as="textarea"
                 rows={2}
                 name="notes"
-                value={customer.notes}
+                value={customerData.notes}
                 onChange={handleChange}
               />
             </Form.Group>

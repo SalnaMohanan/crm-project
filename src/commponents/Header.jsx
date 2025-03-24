@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Navbar, Nav, Container, Dropdown, Modal, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import Profile from "./Profiles";
+import logo from "../assets/logo.png"
 
 const Header = ({ insideDashboard }) => {
   const navigate = useNavigate();
@@ -24,13 +25,13 @@ const Header = ({ insideDashboard }) => {
           {/* Left: Logo & Brand */}
           <Navbar.Brand as={Link} to="/">
             <img
-              src="" // Insert your logo URL
+              src={logo} // Insert your logo URL
               alt="CRM Logo"
               width="40"
               height="40"
               className="d-inline-block align-top me-2"
             />
-            <span className="fw-bold">Your CRM Name</span>
+            <span className="fw-bold">LeadMorph</span>
           </Navbar.Brand>
 
           {/* Toggle Button for Mobile */}

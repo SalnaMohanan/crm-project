@@ -73,7 +73,7 @@ const CustomerView = ({ insideadmin }) => {
             <Col xs={8}>
               <span
                 className="bg-success">
-                Conntected
+                Converted
                 
               </span>
             </Col>

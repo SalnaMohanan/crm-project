@@ -71,7 +71,7 @@ const Followview = ({ insideadmin }) => {
           </Row>
 
           <div className="d-flex justify-content-center mt-4">
-            <Button variant="secondary" className="w-25" onClick={() => navigate(insideadmin ? "/user/followup" : "/followup")}>
+            <Button variant="secondary" className="w-25" onClick={() => navigate(-1)}>
               Cancel
             </Button>
           </div>
